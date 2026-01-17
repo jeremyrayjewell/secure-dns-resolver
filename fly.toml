@@ -1,0 +1,34 @@
+app = 'secure-dns-resolver'
+primary_region = 'dfw'
+
+[build]
+
+[[services]]
+  internal_port = 8853
+  protocol = "tcp"
+  auto_stop_machines = "off"
+  min_machines_running = 1
+  processes = ["app"]
+  checks = []
+
+  [[services.ports]]
+    port = 8853
+
+
+[[services]]
+  internal_port = 8053
+  protocol = "udp"
+  auto_stop_machines = "off"
+  min_machines_running = 1
+  processes = ["app"]
+  checks = []
+
+  [[services.ports]]
+    port = 8053
+
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
