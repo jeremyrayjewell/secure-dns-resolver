@@ -4,7 +4,7 @@ Live deployment: [https://secure-dns-resolver.fly.dev/](https://secure-dns-resol
 
 (Plain DNS over UDP: `secure-dns-resolver.fly.dev:8053`)
 
-![Secure DNS Resolver diagram](docs/screenshot.svg)
+![Secure DNS Resolver diagram](docs/screenshot.png)
 
 A small, private-by-default DNS resolver written with Unbound.
 It performs iterative recursion with DNSSEC validation and supports DNS-over-TLS (DoT).
