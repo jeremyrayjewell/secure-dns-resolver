@@ -55,6 +55,10 @@ fi
 # - Local dev: set UNBOUND_ALLOWED_NETS to a comma-separated list (e.g. 172.16.0.0/12,192.168.0.0/16)
 {
   echo "# Generated at startup. Do not commit."
+
+  # Always listen on loopback so in-VM tests work.
+  echo "interface: 127.0.0.1"
+  echo "interface: ::1"
   if [ -n "${FLY_APP_NAME:-}" ] || [ -n "${FLY_REGION:-}" ]; then
     echo "access-control: fdaa::/8 allow"
   fi
