@@ -31,7 +31,10 @@ docker build -t secure-dns-resolver:local .
 # usually required because the resolver is deny-by-default.
 $env:UNBOUND_ALLOWED_NETS = "172.16.0.0/12,192.168.0.0/16"
 
-docker run --rm -p 853:853 `
+docker run --rm \
+  -p 8853:8853 \
+  -p 8053:8053/udp \
+  -p 8053:8053/tcp `
   -e TLS_SERVER_KEY="$env:TLS_SERVER_KEY" `
   -e TLS_SERVER_CERT="$env:TLS_SERVER_CERT" `
   -e UNBOUND_ALLOWED_NETS="$env:UNBOUND_ALLOWED_NETS" `
@@ -39,7 +42,7 @@ docker run --rm -p 853:853 `
 ```
 
 Then test (example):
-- `openssl s_client -connect 127.0.0.1:853 -servername dot.local -CAfile certs/ca.pem`
+- `openssl s_client -connect 127.0.0.1:8853 -servername dot.local -CAfile certs/ca.pem`
 
 ## Option B: Run Unbound directly on the host
 

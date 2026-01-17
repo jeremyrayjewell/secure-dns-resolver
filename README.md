@@ -5,7 +5,7 @@ Private, hardened DNS resolver for learning + portfolio purposes.
 **Goals**
 - Recursive resolver using Unbound
 - DNSSEC validation
-- DNS-over-TLS (DoT) on TCP/853
+- DNS-over-TLS (DoT) on TCP/8853
 - Private-only (NOT an open resolver)
 - Clear, auditable configuration and documentation
 
@@ -34,19 +34,19 @@ Private, hardened DNS resolver for learning + portfolio purposes.
 - Public “open resolver” operation
 - Complex feature sets (DoH/DoQ, RPZ, custom auth zones) unless explicitly added later
 
-## Why this resolver does not work behind NordVPN (and why that’s correct)
+## Why this resolver does not work behind many VPNs 
 
 Many consumer VPNs (including NordVPN in typical configurations) enforce a strict DNS egress policy:
 
-- They block or intercept raw DNS traffic (UDP/TCP port 53) to prevent DNS leaks.
-- A **recursive** resolver must be able to talk to the public DNS infrastructure (root/TLD/authoritative) over port 53.
+- They block or intercept raw DNS traffic (UDP/TCP DNS) to prevent DNS leaks.
+- A **recursive** resolver must be able to talk to the public DNS infrastructure (root/TLD/authoritative) over UDP/TCP DNS.
 - So when the VPN blocks raw DNS egress, a recursive resolver cannot complete iterative resolution — this is expected and is a *security feature* of the VPN.
 
 If you want Unbound to work in a VPN environment, you generally need one of these models:
 
-- Run Unbound off-VPN (localhost recursion on a network that allows port 53 egress)
+- Run Unbound off-VPN (localhost recursion on a network that allows DNS egress)
 - Run Unbound as a remote service (e.g., on Fly.io) and connect to it over DoT
-- Use DoT upstream forwarding (hybrid mode) so Unbound does not need raw port 53 egress
+- Use DoT upstream forwarding (hybrid mode) so Unbound does not need raw DNS egress
 
 ## Deployment models (Fly.io)
 

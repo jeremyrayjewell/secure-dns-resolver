@@ -24,18 +24,18 @@ This resolver is for **personal / controlled-client** use. The primary security 
 
 **Mitigations**
 - Bind only to localhost by default:
-  - `interface: 127.0.0.1` and `interface: 127.0.0.1@853`
+  - `interface: 127.0.0.1` and `interface: 127.0.0.1@8853`
 - Default-deny ACLs:
   - `access-control: 0.0.0.0/0 refuse`
   - Add only specific client allow rules.
 - Host firewall:
-  - Permit TCP/853 only from explicit client IP(s).
+  - Permit TCP/8853 only from explicit client IP(s).
 
 ### 2) DNS spoofing / cache poisoning
 **Threat**: Off-path attacker injects forged replies or exploits weak validation.
 
 **Mitigations**
-- DNSSEC validation enabled (`validator` module + `auto-trust-anchor-file`).
+- DNSSEC validation enabled (`validator` module + embedded public IANA root trust anchor).
 - `harden-dnssec-stripped: yes` to treat unexpected absence of DNSSEC data as failure when anchored.
 - Conservative Unbound hardening options (glue validation, short-bufsize hardening).
 
@@ -44,7 +44,7 @@ This resolver is for **personal / controlled-client** use. The primary security 
 
 **Mitigations**
 - Prefer DoT for clients.
-- Keep plaintext DNS on localhost only (no LAN binding on port 53).
+- Keep plaintext DNS on localhost only (no LAN binding for plaintext DNS).
 - Validate certs on clients (trust `ca.pem` and verify hostname/SAN).
 
 ### 4) TLS key compromise

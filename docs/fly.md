@@ -1,7 +1,7 @@
 # Fly.io deployment (DoT over private WireGuard)
 
 This deployment keeps the resolver **private-by-default**:
-- Unbound listens for **DoT on TCP/853**.
+- Unbound listens for **DoT on TCP/8853**.
 - Access is allowed only from Fly's private IPv6 range (`fdaa::/8`) via WireGuard / 6PN.
 - TLS key material is provided at runtime via Fly secrets (never stored in the repo).
 
@@ -57,7 +57,7 @@ To find it:
 - `fly ips private`
 
 Then test TLS handshake (replace `<6pn-ip>`):
-- `openssl s_client -connect [<6pn-ip>]:853 -servername dot.local -CAfile certs/ca.pem`
+- `openssl s_client -connect [<6pn-ip>]:8853 -servername dot.local -CAfile certs/ca.pem`
 
 Note: the CA file is for your client validation; it is not deployed to Fly.
 

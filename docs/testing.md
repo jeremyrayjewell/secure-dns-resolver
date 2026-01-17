@@ -27,7 +27,7 @@ Test a domain with known DNSSEC issues (should fail with SERVFAIL):
 
 ### Check the TLS handshake and certificate
 If your server cert is signed by your lab CA:
-- `openssl s_client -connect 127.0.0.1:853 -servername dot.local -CAfile certs/ca.pem`
+- `openssl s_client -connect 127.0.0.1:8853 -servername dot.local -CAfile certs/ca.pem`
 
 What to look for:
 - `Verify return code: 0 (ok)`
@@ -40,7 +40,7 @@ DoT support in `dig` depends on your BIND tools version/build.
 If your `dig` does not support DoT flags, use a DoT-capable tool (e.g., `kdig`) for the DoT query portion.
 
 If your `dig` supports DoT, typical patterns are:
-- `dig +tcp +tls @127.0.0.1 -p 853 example.com A`
+- `dig +tcp +tls @127.0.0.1 -p 8853 example.com A`
 
 If CA pinning flags are available in your build, supply the CA file.
 
@@ -48,8 +48,8 @@ If CA pinning flags are available in your build, supply the CA file.
 
 ### Wireshark (Windows)
 Capture on your active interface and apply display filters:
-- DoT traffic: `tcp.port == 853`
-- Plain DNS (should be absent off-box): `udp.port == 53 or tcp.port == 53`
+- DoT traffic: `tcp.port == 8853`
+- Plain DNS (should be absent off-box): `udp.port == 8053 or tcp.port == 8053`
 
 What to verify:
 - DoT packets show as TLS records; DNS payload should not be visible.
@@ -57,7 +57,7 @@ What to verify:
 
 ### tcpdump (Linux/WSL)
 If you test from a Linux host:
-- `sudo tcpdump -ni any tcp port 853`
+- `sudo tcpdump -ni any tcp port 8853`
 
 You should see TLS handshakes and encrypted application data.
 

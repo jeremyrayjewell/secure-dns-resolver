@@ -9,6 +9,10 @@ KEY_PATH="$DATA_DIR/server.key"
 CERT_PATH="$DATA_DIR/server.pem"
 ACL_PATH="$DATA_DIR/access-control.conf"
 
+# Fly's init can start us with an unexpected working directory; Unbound config
+# uses relative paths (var/root.hints, var/root.key, logfile), so normalize.
+cd "$APP_ROOT"
+
 mkdir -p "$DATA_DIR" "$VAR_DIR"
 
 # Secrets are expected to be injected at runtime (Fly.io secrets):
@@ -69,13 +73,23 @@ fi
 
 chmod 600 "$ACL_PATH" || true
 
-# Bootstrap trust anchor if missing (required for DNSSEC validation).
-if [ ! -f "$VAR_DIR/root.key" ]; then
+# Optional trust-anchor bootstrap (disabled by default). The shipped configs embed
+# the public IANA root trust anchor, so this is not required for startup.
+if [ "${UNBOUND_TRUST_ANCHOR_BOOTSTRAP:-0}" = "1" ] && [ ! -f "$VAR_DIR/root.key" ]; then
   if command -v unbound-anchor >/dev/null 2>&1; then
     echo "Bootstrapping DNSSEC trust anchor -> $VAR_DIR/root.key"
-    unbound-anchor -a "$VAR_DIR/root.key"
+    if ! unbound-anchor -a "$VAR_DIR/root.key"; then
+      echo "WARN: unbound-anchor failed; attempting fallback trust anchor" >&2
+
+      if [ -f "/etc/unbound/root.key" ]; then
+        cp "/etc/unbound/root.key" "$VAR_DIR/root.key"
+        chmod 600 "$VAR_DIR/root.key" || true
+      else
+        echo "WARN: no packaged root.key found; skipping trust-anchor bootstrap" >&2
+      fi
+    fi
   else
-    echo "WARN: unbound-anchor not found; DNSSEC may fail without $VAR_DIR/root.key" >&2
+    echo "WARN: unbound-anchor not found; DNSSEC bootstrap skipped" >&2
   fi
 fi
 
@@ -85,4 +99,10 @@ if [ ! -f "$CONFIG_PATH" ]; then
 fi
 
 echo "Starting Unbound with config: $CONFIG_PATH"
+
+if command -v unbound-checkconf >/dev/null 2>&1; then
+  echo "Validating Unbound config (cwd=$(pwd))"
+  unbound-checkconf "$CONFIG_PATH"
+fi
+
 exec unbound -d -c "$CONFIG_PATH"

@@ -44,21 +44,23 @@ Avoid the `unbound-<version>.tar.gz` / source archive for Windows setup:
    - `unbound.exe`, `unbound-anchor.exe`, and `unbound-checkconf.exe`
 4. Add that folder to your PATH *or* run commands from that directory.
 
-## 2) Repo bootstrap: trust anchor + root hints
+## 2) Repo bootstrap: root hints
 
 From the repo root:
 - `powershell -ExecutionPolicy Bypass -File scripts/bootstrap-unbound.ps1`
 
-If Unbound isn't on your PATH yet, pass the full path to `unbound-anchor.exe`:
-- `powershell -ExecutionPolicy Bypass -File scripts/bootstrap-unbound.ps1 -UnboundAnchorExe "C:\Program Files\Unbound\unbound-anchor.exe"`
-
 What this does:
 - Downloads `var/root.hints` from Internic (`named.root`)
-- Generates/bootstraps `var/root.key` using `unbound-anchor -a`
+
+Optional (not required by the default repo configs): also generate `var/root.key` using `unbound-anchor -a`:
+- `powershell -ExecutionPolicy Bypass -File scripts/bootstrap-unbound.ps1 -BootstrapTrustAnchor`
+
+If Unbound isn't on your PATH yet, pass the full path to `unbound-anchor.exe`:
+- `powershell -ExecutionPolicy Bypass -File scripts/bootstrap-unbound.ps1 -BootstrapTrustAnchor -UnboundAnchorExe "C:\Program Files\Unbound\unbound-anchor.exe"`
 
 Why this matters:
 - **root.hints**: list of root nameserver addresses (bootstrap for recursion)
-- **root.key**: DNSSEC trust anchor state; Unbound uses it to validate DNSSEC
+- **root.key** (optional): DNSSEC trust anchor state file used when configured for RFC5011 auto-updates
 
 ## 3) Generate TLS certs for DoT
 
@@ -100,7 +102,7 @@ Two layers must align:
 
 In [configs/unbound/unbound.conf](../configs/unbound/unbound.conf):
 - Add an interface for DoT, for example:
-  - `interface: 192.0.2.10@853`
+  - `interface: 192.0.2.10@8853`
 - Allow only your client:
   - `access-control: 192.0.2.50/32 allow`
 
@@ -109,7 +111,7 @@ Keep the defaults:
 - `access-control: ::0/0 refuse`
 
 Operational note:
-- Also enforce host firewall rules (Windows Defender Firewall): allow TCP/853 only from your client IP.
+- Also enforce host firewall rules (Windows Defender Firewall): allow TCP/8853 only from your client IP.
 
 ## 6) Linux notes (later deployment)
 - On Debian/Ubuntu:

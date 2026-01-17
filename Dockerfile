@@ -19,6 +19,8 @@ RUN adduser -D -H -s /sbin/nologin unbounduser \
 
 USER unbounduser
 
-EXPOSE 853/tcp
+EXPOSE 8853/tcp
+EXPOSE 8053/udp
+EXPOSE 8053/tcp
 
 ENTRYPOINT ["/bin/sh", "/app/scripts/entrypoint.sh"]
