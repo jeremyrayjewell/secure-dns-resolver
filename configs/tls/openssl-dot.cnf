@@ -1,0 +1,28 @@
+# OpenSSL config to generate a DNS-over-TLS server certificate with SANs.
+#
+# Edit the [alt_names] section to match how your clients connect:
+# - If clients connect by IP, include IP.1, IP.2, ...
+# - If clients connect by name, include DNS.1, DNS.2, ...
+#
+# NOTE: For local testing, it's fine to include 127.0.0.1 and localhost.
+
+[ req ]
+default_bits       = 2048
+prompt             = no
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = req_ext
+
+[ dn ]
+CN = dot.local
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = dot.local
+DNS.2 = localhost
+IP.1  = 127.0.0.1
+IP.2  = ::1
+# Add your LAN resolver IP if you bind DoT on it, e.g.
+# IP.3 = 192.0.2.10

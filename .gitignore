@@ -1,0 +1,14 @@
+# Generated TLS material (DO NOT COMMIT)
+certs/*.key
+certs/*.pem
+certs/*.csr
+certs/*.srl
+
+# Unbound runtime + bootstrap outputs
+var/root.key
+var/*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
