@@ -1,6 +1,6 @@
 FROM alpine:3.20
 
-RUN apk add --no-cache unbound ca-certificates openssl
+RUN apk add --no-cache unbound ca-certificates openssl bind-tools
 
 WORKDIR /app
 
