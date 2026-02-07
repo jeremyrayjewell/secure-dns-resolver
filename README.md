@@ -1,8 +1,7 @@
 # Private DNS-over-TLS Resolver (Unbound)
 
-Live deployment: [https://secure-dns-resolver.fly.dev/](https://secure-dns-resolver.fly.dev/)
-
-(Plain DNS over UDP: `secure-dns-resolver.fly.dev:8053`)
+Plain DNS (UDP) endpoint at `secure-dns-resolver.fly.dev:8053` is currently offline to control hosting costs.
+Implementation and configuration are available in the repository.
 
 ![Secure DNS Resolver diagram](docs/screenshot.png)
 
